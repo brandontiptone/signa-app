@@ -1,0 +1,229 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  COMMERCIAL
+}
+
+enum StatutOrganisation {
+  ACTIF
+  SUSPENDU
+}
+
+enum StatutFacture {
+  PAYEE
+  IMPAYEE
+}
+
+enum StatutRdv {
+  PLANIFIE
+  EN_COURS
+  TERMINE
+  ANNULE
+}
+
+enum TypeDocument {
+  PHOTO
+  DOCUMENT
+}
+
+// Type de champ personnalisé qu'une entreprise peut ajouter à son formulaire de visite
+enum TypeChamp {
+  TEXTE
+  NOMBRE
+  ZONE_TEXTE
+  CHOIX
+  CASE_A_COCHER
+}
+
+enum StatutRappel {
+  EN_ATTENTE
+  ENVOYE
+  ECHEC
+  ANNULE
+}
+
+// Un pack tarifaire que le super admin propose à la vente
+// (ex : "Jusqu'à 4 techniciens" à 29,99€/mois)
+model Plan {
+  id             String         @id @default(uuid())
+  nom            String
+  prixMensuel    Float
+  maxTechniciens Int?           // null = illimité
+  organisations  Organisation[]
+  createdAt      DateTime       @default(now())
+}
+
+// Une entreprise cliente qui loue l'application.
+// Le vocabulaire et le pipeline de résultat sont propres à chaque entreprise,
+// de façon à ce que l'app s'adapte à n'importe quel métier terrain
+// (vente à domicile, maintenance, dépannage, inspection...).
+model Organisation {
+  id        String             @id @default(uuid())
+  nom       String
+  plan      Plan               @relation(fields: [planId], references: [id])
+  planId    String
+  statut    StatutOrganisation @default(ACTIF)
+
+  // Vocabulaire personnalisable (ex : "étude", "intervention", "diagnostic"...)
+  labelVisite String @default("étude")
+
+  // Rappel SMS automatique au client final avant le RDV
+  rappelSmsActif  Boolean @default(false)
+  rappelDelaisH   Int[]   @default([]) // ex : [1, 3, 24] — délais en heures avant le RDV
+
+  users         User[]
+  clients       Client[]
+  factures      Facture[]
+  resultats     ResultatOption[]
+  champs        ChampPersonnalise[]
+  createdAt     DateTime            @default(now())
+}
+
+// Une facture mensuelle pour une entreprise cliente — indépendante du statut
+// actif/suspendu et du pack en cours (l'historique reste figé même si le pack change ensuite)
+model Facture {
+  id             String        @id @default(uuid())
+  numero         String        @unique
+  organisation   Organisation  @relation(fields: [organisationId], references: [id])
+  organisationId String
+  montant        Float
+  periode        String        // ex : "Septembre 2026"
+  statut         StatutFacture @default(IMPAYEE)
+  dateEcheance   DateTime
+  datePaiement   DateTime?
+  envoyeeLe      DateTime?     // dernière fois où elle a été envoyée par email
+  envoyeeA       String?       // email du destinataire
+  createdAt      DateTime      @default(now())
+}
+
+model User {
+  id             String         @id @default(uuid())
+  email          String         @unique
+  password       String
+  nom            String
+  prenom         String
+  telephone      String?
+  role           Role           @default(COMMERCIAL)
+  pushToken      String?
+  organisation   Organisation?  @relation(fields: [organisationId], references: [id])
+  organisationId String?        // null uniquement pour le SUPER_ADMIN
+  createdAt      DateTime       @default(now())
+  clients        Client[]
+  rdvs           Rdv[]
+  notifications  Notification[]
+}
+
+model Client {
+  id             String       @id @default(uuid())
+  nom            String
+  prenom         String
+  telephone      String?
+  email          String?
+  adresse        String?
+  commercial     User         @relation(fields: [commercialId], references: [id])
+  commercialId   String
+  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisationId String
+  rdvs           Rdv[]
+  createdAt      DateTime     @default(now())
+}
+
+// Une option de résultat possible pour une visite, définie par chaque entreprise
+// (ex : "Signé" / "Non signé", ou "Réparé" / "À recontacter" / "Pièce à commander")
+model ResultatOption {
+  id             String       @id @default(uuid())
+  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisationId String
+  label          String
+  estPositif     Boolean      // sert à calculer les stats "taux de réussite"
+  ordre          Int          @default(0)
+  rdvs           Rdv[]
+}
+
+// Un champ personnalisé que l'entreprise ajoute à son formulaire de visite
+// (en plus des photos/documents déjà intégrés nativement)
+model ChampPersonnalise {
+  id             String       @id @default(uuid())
+  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisationId String
+  label          String
+  type           TypeChamp
+  options        String[]     @default([]) // pour le type CHOIX : liste des choix possibles
+  obligatoire    Boolean      @default(false)
+  ordre          Int          @default(0)
+  reponses       ReponseChamp[]
+}
+
+// La réponse donnée par le technicien pour un champ personnalisé, sur un RDV donné
+model ReponseChamp {
+  id       String            @id @default(uuid())
+  rdv      Rdv               @relation(fields: [rdvId], references: [id])
+  rdvId    String
+  champ    ChampPersonnalise @relation(fields: [champId], references: [id])
+  champId  String
+  valeur   String            // stocké en texte, y compris pour NOMBRE/CASE_A_COCHER (converti à l'affichage)
+
+  @@unique([rdvId, champId])
+}
+
+model Rdv {
+  id           String          @id @default(uuid())
+  client       Client          @relation(fields: [clientId], references: [id])
+  clientId     String
+  commercial   User            @relation(fields: [commercialId], references: [id])
+  commercialId String
+  dateHeure    DateTime
+  adresse      String?
+  notes        String?
+  statut       StatutRdv       @default(PLANIFIE)
+  resultat     ResultatOption? @relation(fields: [resultatId], references: [id])
+  resultatId   String?
+  documents    Document[]
+  reponses     ReponseChamp[]
+  rappels      RappelSms[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model Document {
+  id        String       @id @default(uuid())
+  rdv       Rdv          @relation(fields: [rdvId], references: [id])
+  rdvId     String
+  type      TypeDocument
+  url       String
+  nom       String
+  createdAt DateTime     @default(now())
+}
+
+// Un rappel SMS programmé pour un RDV, à un délai donné avant l'heure du RDV
+// (un même RDV peut avoir plusieurs rappels si l'entreprise a choisi plusieurs délais)
+model RappelSms {
+  id            String       @id @default(uuid())
+  rdv           Rdv          @relation(fields: [rdvId], references: [id])
+  rdvId         String
+  delaiHeures   Int          // 1, 3 ou 24
+  envoyerA      DateTime     // date/heure calculée à laquelle envoyer le SMS
+  statut        StatutRappel @default(EN_ATTENTE)
+  envoyeLe      DateTime?
+  createdAt     DateTime     @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  titre     String
+  message   String
+  type      String
+  lu        Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

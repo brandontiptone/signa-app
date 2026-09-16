@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "Signa",
+    "slug": "signa",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#FF6B4A"
+        }
+      ]
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.tonentreprise.signa",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Signa a besoin de la caméra pour photographier les documents lors des visites.",
+        "NSPhotoLibraryUsageDescription": "Signa a besoin d'accéder à vos photos pour joindre des documents."
+      }
+    },
+    "android": {
+      "package": "com.tonentreprise.signa",
+      "permissions": ["CAMERA", "READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE", "NOTIFICATIONS"]
+    },
+    "extra": {
+      "eas": {
+        "projectId": "REMPLACE_PAR_TON_PROJECT_ID_EAS"
+      }
+    }
+  }
+}
