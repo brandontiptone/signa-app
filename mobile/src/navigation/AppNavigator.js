@@ -5,6 +5,7 @@ import { Text } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 
 import LoginScreen from '../screens/LoginScreen';
+import CoverScreen from '../screens/CoverScreen';
 import HomeScreen from '../screens/HomeScreen';
 import PlanningWeekScreen from '../screens/PlanningWeekScreen';
 import PlanningListScreen from '../screens/PlanningListScreen';
@@ -57,7 +58,10 @@ export default function AppNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {!user ? (
-        <Stack.Screen name="Login" component={LoginScreen} />
+        <>
+          <Stack.Screen name="Cover" component={CoverScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+        </>
       ) : user.role === 'SUPER_ADMIN' ? (
         <>
           <Stack.Screen name="PlanningTabs" component={OrganisationsScreen} />
