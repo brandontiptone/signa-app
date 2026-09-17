@@ -1,8 +1,8 @@
 import React from 'react';
 import Svg, { G, Path, Circle, Ellipse, Rect } from 'react-native-svg';
 
-// La mascotte technicien Signa, en style BD — portée du prototype web.
-// `size` contrôle la largeur (la hauteur suit le ratio 240x300 du dessin d'origine).
+// La mascotte technicien Signa, en style BD — portée du prototype web,
+// avec une vraie casquette (dôme + visière) bien visible.
 export default function Mascot({ size = 200 }) {
   const height = (size / 240) * 300;
   return (
@@ -36,19 +36,23 @@ export default function Mascot({ size = 200 }) {
 
         <Rect x={110} y={98} width={20} height={18} fill="#F2C9A0" stroke="none" />
 
+        {/* Tête */}
         <Circle cx={120} cy={76} r={38} fill="#F2C9A0" />
         <Circle cx={84} cy={78} r={7} fill="#F2C9A0" />
         <Circle cx={156} cy={78} r={7} fill="#F2C9A0" />
 
-        <Path d="M78 60 Q120 30 162 60 Q162 48 120 40 Q78 48 78 60 Z" fill="#FF6B4A" />
-        <Path d="M80 62 Q120 34 160 62" fill="none" strokeWidth={4} />
-        <Ellipse cx={120} cy={52} rx={6} ry={4} fill="#fff" strokeWidth={3} />
+        {/* Casquette de technicien : dôme (2 tons) + visière bien marquée */}
+        <Path d="M73 60 Q73 17 120 17 Q167 17 167 60 Q167 45 120 37 Q73 45 73 60 Z" fill="#E8522F" />
+        <Path d="M81 58 Q81 27 120 27 Q159 27 159 58 Q159 44 120 38 Q81 44 81 58 Z" fill="#FF6B4A" />
+        <Path d="M84 56 Q120 72 156 56 Q157 65 120 78 Q83 65 84 56 Z" fill="#E8522F" />
+        <Ellipse cx={120} cy={33} rx={7} ry={5} fill="#fff" strokeWidth={3} />
 
-        <Circle cx={106} cy={80} r={4} fill="#1B2340" stroke="none" />
-        <Circle cx={134} cy={80} r={4} fill="#1B2340" stroke="none" />
-        <Path d="M104 96 Q120 108 136 96" fill="none" strokeWidth={4} />
-        <Circle cx={92} cy={90} r={6} fill="#FFB4A0" stroke="none" opacity={0.75} />
-        <Circle cx={148} cy={90} r={6} fill="#FFB4A0" stroke="none" opacity={0.75} />
+        {/* Visage */}
+        <Circle cx={106} cy={86} r={4} fill="#1B2340" stroke="none" />
+        <Circle cx={134} cy={86} r={4} fill="#1B2340" stroke="none" />
+        <Path d="M104 100 Q120 112 136 100" fill="none" strokeWidth={4} />
+        <Circle cx={92} cy={96} r={6} fill="#FFB4A0" stroke="none" opacity={0.75} />
+        <Circle cx={148} cy={96} r={6} fill="#FFB4A0" stroke="none" opacity={0.75} />
 
         <Path d="M204 46 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 Z" fill="#FFB020" strokeWidth={2} />
         <Path d="M214 66 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2 Z" fill="#1F9D6B" strokeWidth={2} />

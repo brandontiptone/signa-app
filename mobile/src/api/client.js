@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// ⚠️ Remplace par l'URL de ton backend déployé (ex: https://api.tonentreprise.com)
+// URL de l'API back-end déployée sur Railway
 export const API_URL = 'https://signa-backend-production-ceb6.up.railway.app/api';
 
 const client = axios.create({ baseURL: API_URL });

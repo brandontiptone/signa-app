@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingVi
 import { useAuth } from '../context/AuthContext';
 import FormError from '../components/FormError';
 import Mascot from '../components/Mascot';
+import Logo from '../components/Logo';
 
 export default function LoginScreen({ navigation }) {
   const { login } = useAuth();
@@ -32,6 +33,7 @@ export default function LoginScreen({ navigation }) {
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
         <View style={styles.hero}>
+          <Logo size={40} />
           <Mascot size={110} />
           <Text style={styles.title}>Bienvenue</Text>
           <Text style={styles.subtitle}>Connecte-toi à ton espace terrain</Text>
