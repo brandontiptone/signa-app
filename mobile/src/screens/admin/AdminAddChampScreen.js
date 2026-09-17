@@ -46,7 +46,7 @@ export default function AdminAddChampScreen({ navigation }) {
       <FormError message={banner} variant="banner" />
 
       <Text style={styles.label}>Libellé du champ</Text>
-      <TextInput style={styles.input} placeholder='Ex : "Type d\'installation"' value={label} onChangeText={setLabel} />
+      <TextInput style={styles.input} placeholder="Ex : Type d'installation" value={label} onChangeText={setLabel} />
 
       <Text style={styles.label}>Type de champ</Text>
       <View style={styles.typeRow}>
