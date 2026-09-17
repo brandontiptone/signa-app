@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Mascot from '../components/Mascot';
 
 const { width } = Dimensions.get('window');
@@ -19,34 +20,36 @@ export default function CoverScreen({ navigation }) {
   }, []);
 
   return (
-    <LinearGradient colors={['#1B2340', '#262C4A']} style={styles.container}>
-      <View style={styles.brandRow}>
-        <View style={styles.brandMark}><Text style={styles.brandMarkText}>S</Text></View>
-        <Text style={styles.brandName}>Signa</Text>
-      </View>
+    <LinearGradient colors={['#1B2340', '#262C4A']} style={{ flex: 1 }}>
+      <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+        <View style={styles.brandRow}>
+          <View style={styles.brandMark}><Text style={styles.brandMarkText}>S</Text></View>
+          <Text style={styles.brandName}>Signa</Text>
+        </View>
 
-      <View style={styles.mascotWrap}>
-        <Animated.View style={{ transform: [{ translateY: floatAnim }] }}>
-          <Mascot size={MASCOT_SIZE} />
-        </Animated.View>
-      </View>
+        <View style={styles.mascotWrap}>
+          <Animated.View style={{ transform: [{ translateY: floatAnim }] }}>
+            <Mascot size={MASCOT_SIZE} />
+          </Animated.View>
+        </View>
 
-      <View style={styles.bubble}>
-        <Text style={styles.bubbleText}>Prêt pour la tournée du jour ?</Text>
-      </View>
+        <View style={styles.bubble}>
+          <Text style={styles.bubbleText}>Prêt pour la tournée du jour ?</Text>
+        </View>
 
-      <Text style={styles.title}>Ton terrain, simplifié</Text>
-      <Text style={styles.subtitle}>Planning, visites et dossiers clients — tout au même endroit, pensé pour l'action.</Text>
+        <Text style={styles.title}>Ton terrain, simplifié</Text>
+        <Text style={styles.subtitle}>Planning, visites et dossiers clients — tout au même endroit, pensé pour l'action.</Text>
 
-      <TouchableOpacity style={styles.cta} onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.ctaText}>Découvrir l'application</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.cta} onPress={() => navigation.navigate('Login')}>
+          <Text style={styles.ctaText}>Découvrir l'application</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
     </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', paddingTop: 70, paddingHorizontal: 24, paddingBottom: 40 },
+  container: { flex: 1, alignItems: 'center', paddingTop: 20, paddingHorizontal: 24, paddingBottom: 20 },
   brandRow: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', gap: 9, marginBottom: 10 },
   brandMark: { width: 34, height: 34, borderRadius: 10, backgroundColor: '#FF6B4A', alignItems: 'center', justifyContent: 'center' },
   brandMarkText: { color: '#fff', fontWeight: '800', fontSize: 16 },

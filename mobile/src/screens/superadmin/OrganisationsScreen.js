@@ -1,9 +1,12 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, RefreshControl } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import client from '../../api/client';
+import { useAuth } from '../../context/AuthContext';
 
 export default function OrganisationsScreen({ navigation }) {
+  const { logout } = useAuth();
   const [orgs, setOrgs] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -51,9 +54,17 @@ export default function OrganisationsScreen({ navigation }) {
   };
 
   return (
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
     <ScrollView style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       <Text style={styles.title}>Entreprises clientes</Text>
       <Text style={styles.sub}>Pilotage des accès loués — Signa</Text>
+
+      <TouchableOpacity onPress={() => Alert.alert('Se déconnecter ?', '', [
+        { text: 'Annuler', style: 'cancel' },
+        { text: 'Se déconnecter', style: 'destructive', onPress: logout },
+      ])} style={styles.logoutLink}>
+        <Text style={styles.logoutText}>Se déconnecter</Text>
+      </TouchableOpacity>
 
       <View style={styles.revenueRow}>
         <View style={styles.revenueBox}>
@@ -110,12 +121,16 @@ export default function OrganisationsScreen({ navigation }) {
         );
       })}
     </ScrollView>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
+  safeArea: { flex: 1, backgroundColor: '#f5f6fa' },
   container: { flex: 1, backgroundColor: '#f5f6fa', padding: 20 },
   title: { fontSize: 22, fontWeight: '800', color: '#1a1a2e' },
   sub: { fontSize: 12.5, color: '#888', marginBottom: 18 },
+  logoutLink: { alignSelf: 'flex-end', marginTop: -30, marginBottom: 16 },
+  logoutText: { color: '#dc2626', fontWeight: '700', fontSize: 12.5 },
   revenueRow: { flexDirection: 'row', gap: 10, marginBottom: 16 },
   revenueBox: { flex: 1, backgroundColor: '#1B2340', borderRadius: 14, padding: 14 },
   revenueNum: { color: '#fff', fontSize: 19, fontWeight: '800' },

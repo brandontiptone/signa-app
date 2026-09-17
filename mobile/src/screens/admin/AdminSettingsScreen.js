@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Switch
 import { useFocusEffect } from '@react-navigation/native';
 import client from '../../api/client';
 import FormError from '../../components/FormError';
+import { useAuth } from '../../context/AuthContext';
 
 const DELAIS = [
   { value: 1, label: '1h avant' },
@@ -19,6 +20,7 @@ const TYPES_CHAMP = [
 ];
 
 export default function AdminSettingsScreen({ navigation }) {
+  const { logout } = useAuth();
   const [labelVisite, setLabelVisite] = useState('');
   const [rappelSmsActif, setRappelSmsActif] = useState(false);
   const [rappelDelaisH, setRappelDelaisH] = useState([]);
@@ -157,6 +159,16 @@ export default function AdminSettingsScreen({ navigation }) {
         </View>
       ))}
       {champs.length === 0 && <Text style={styles.empty}>Aucun champ personnalisé pour le moment</Text>}
+
+      <TouchableOpacity
+        style={styles.logoutBtn}
+        onPress={() => Alert.alert('Se déconnecter ?', '', [
+          { text: 'Annuler', style: 'cancel' },
+          { text: 'Se déconnecter', style: 'destructive', onPress: logout },
+        ])}
+      >
+        <Text style={styles.logoutText}>Se déconnecter</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -187,4 +199,6 @@ const styles = StyleSheet.create({
   positifOff: { backgroundColor: '#f0f0f0', color: '#888' },
   deleteText: { color: '#dc2626', fontWeight: '700', fontSize: 12 },
   empty: { color: '#999', fontStyle: 'italic', fontSize: 12.5 },
+  logoutBtn: { marginTop: 30, marginBottom: 40, alignItems: 'center', padding: 12 },
+  logoutText: { color: '#dc2626', fontWeight: '700', fontSize: 13 },
 });

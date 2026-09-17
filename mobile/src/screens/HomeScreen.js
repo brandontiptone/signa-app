@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, RefreshControl, TouchableOpacity, Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import client from '../api/client';
 import { useAuth } from '../context/AuthContext';
 
 export default function HomeScreen({ navigation }) {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [stats, setStats] = useState({ signes: 0, nonSignes: 0, total: 0, pourcentageSigne: 0 });
   const [notifications, setNotifications] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -72,6 +72,16 @@ export default function HomeScreen({ navigation }) {
           <Text style={styles.notifMessage}>{n.message}</Text>
         </TouchableOpacity>
       ))}
+
+      <TouchableOpacity
+        style={styles.logoutBtn}
+        onPress={() => Alert.alert('Se déconnecter ?', '', [
+          { text: 'Annuler', style: 'cancel' },
+          { text: 'Se déconnecter', style: 'destructive', onPress: logout },
+        ])}
+      >
+        <Text style={styles.logoutText}>Se déconnecter</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -91,4 +101,6 @@ const styles = StyleSheet.create({
   notifCard: { backgroundColor: '#fff', borderRadius: 12, padding: 14, marginBottom: 10, borderLeftWidth: 4, borderLeftColor: '#2563eb' },
   notifTitle: { fontWeight: '600', color: '#1a1a2e', marginBottom: 2 },
   notifMessage: { color: '#666', fontSize: 13 },
+  logoutBtn: { marginTop: 30, marginBottom: 20, alignItems: 'center', padding: 12 },
+  logoutText: { color: '#dc2626', fontWeight: '700', fontSize: 13 },
 });
