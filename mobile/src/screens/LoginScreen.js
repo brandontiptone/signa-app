@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import FormError from '../components/FormError';
 import Mascot from '../components/Mascot';
@@ -30,6 +31,7 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#1B2340' }} edges={['top']}>
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
         <View style={styles.hero}>
@@ -66,12 +68,13 @@ export default function LoginScreen({ navigation }) {
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   scroll: { flexGrow: 1 },
-  hero: { backgroundColor: '#1B2340', alignItems: 'center', paddingTop: 50, paddingBottom: 30, borderBottomLeftRadius: 28, borderBottomRightRadius: 28 },
+  hero: { backgroundColor: '#1B2340', alignItems: 'center', paddingTop: 20, paddingBottom: 30, borderBottomLeftRadius: 28, borderBottomRightRadius: 28 },
   title: { fontSize: 22, fontWeight: '800', color: '#fff', marginTop: 10 },
   subtitle: { fontSize: 12.5, color: '#C9CCE0', marginTop: 3 },
   card: { flex: 1, backgroundColor: '#fff', padding: 24, paddingTop: 28 },

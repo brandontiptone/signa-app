@@ -26,15 +26,17 @@ import OrganisationsScreen from '../screens/superadmin/OrganisationsScreen';
 import CreateOrganisationScreen from '../screens/superadmin/CreateOrganisationScreen';
 import OrganisationDetailScreen from '../screens/superadmin/OrganisationDetailScreen';
 
+import withSafeArea from '../components/withSafeArea';
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function PlanningTabs() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: false, tabBarActiveTintColor: '#FF6B4A' }}>
-      <Tab.Screen name="Accueil" component={HomeScreen} options={{ tabBarIcon: ({ color }) => <Text style={{ color }}>🏠</Text> }} />
-      <Tab.Screen name="Planning" component={PlanningWeekScreen} options={{ tabBarIcon: ({ color }) => <Text style={{ color }}>📅</Text> }} />
-      <Tab.Screen name="Mes RDV" component={PlanningListScreen} options={{ tabBarIcon: ({ color }) => <Text style={{ color }}>📋</Text> }} />
+      <Tab.Screen name="Accueil" component={withSafeArea(HomeScreen)} options={{ tabBarIcon: ({ color }) => <Text style={{ color }}>🏠</Text> }} />
+      <Tab.Screen name="Planning" component={withSafeArea(PlanningWeekScreen)} options={{ tabBarIcon: ({ color }) => <Text style={{ color }}>📅</Text> }} />
+      <Tab.Screen name="Mes RDV" component={withSafeArea(PlanningListScreen)} options={{ tabBarIcon: ({ color }) => <Text style={{ color }}>📋</Text> }} />
     </Tab.Navigator>
   );
 }
@@ -42,10 +44,10 @@ function PlanningTabs() {
 function AdminTabs() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: false, tabBarActiveTintColor: '#FF6B4A' }}>
-      <Tab.Screen name="Tableau de bord" component={AdminDashboardScreen} options={{ tabBarIcon: ({ color }) => <Text style={{ color }}>📊</Text> }} />
-      <Tab.Screen name="Planning équipe" component={AdminPlanningScreen} options={{ tabBarIcon: ({ color }) => <Text style={{ color }}>🗓️</Text> }} />
-      <Tab.Screen name="Mon équipe" component={AdminTeamScreen} options={{ tabBarIcon: ({ color }) => <Text style={{ color }}>👥</Text> }} />
-      <Tab.Screen name="Paramètres" component={AdminSettingsScreen} options={{ tabBarIcon: ({ color }) => <Text style={{ color }}>⚙️</Text> }} />
+      <Tab.Screen name="Tableau de bord" component={withSafeArea(AdminDashboardScreen)} options={{ tabBarIcon: ({ color }) => <Text style={{ color }}>📊</Text> }} />
+      <Tab.Screen name="Planning équipe" component={withSafeArea(AdminPlanningScreen)} options={{ tabBarIcon: ({ color }) => <Text style={{ color }}>🗓️</Text> }} />
+      <Tab.Screen name="Mon équipe" component={withSafeArea(AdminTeamScreen)} options={{ tabBarIcon: ({ color }) => <Text style={{ color }}>👥</Text> }} />
+      <Tab.Screen name="Paramètres" component={withSafeArea(AdminSettingsScreen)} options={{ tabBarIcon: ({ color }) => <Text style={{ color }}>⚙️</Text> }} />
     </Tab.Navigator>
   );
 }
